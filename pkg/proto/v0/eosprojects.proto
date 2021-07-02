@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package com.owncloud.ocis.eosprojects.v0;
+
+option go_package = "github.com/cernbox/ocis-eosprojects/pkg/proto/v0;proto";
+
+service EosProjects {
+	rpc GetProjects(Request) returns (Response);
+}
+
+message Request {
+}
+
+message Response {
+	repeated Project projects = 1;
+}
+
+message Project {
+	string name = 1;
+	string path = 2;
+	string permissions = 3;
+}

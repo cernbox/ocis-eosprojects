@@ -1,0 +1,29 @@
+FROM arm32v6/alpine:3.13
+
+ARG VERSION=""
+ARG REVISION=""
+
+RUN apk update && \
+	apk upgrade && \
+	apk add ca-certificates mailcap && \
+	rm -rf /var/cache/apk/* && \
+	echo 'hosts: files dns' >| /etc/nsswitch.conf
+
+LABEL maintainer="ownCloud GmbH <devops@owncloud.com>" \
+  org.opencontainers.image.title="oCIS Hello" \
+  org.opencontainers.image.vendor="ownCloud GmbH" \
+  org.opencontainers.image.authors="ownCloud GmbH" \
+  org.opencontainers.image.description="oCIS Hello - An example service for oCIS" \
+  org.opencontainers.image.licenses="Apache-2.0" \
+  org.opencontainers.image.documentation="https://github.com/cernbox/ocis-eosprojects" \
+  org.opencontainers.image.url="https://hub.docker.com/r/owncloud/ocis-eosprojects" \
+  org.opencontainers.image.source="https://github.com/cernbox/ocis-eosprojects" \
+  org.opencontainers.image.version="${VERSION}" \
+  org.opencontainers.image.revision="${REVISION}"
+
+EXPOSE 9105 9106 9109
+
+ENTRYPOINT ["/usr/bin/hello"]
+CMD ["server"]
+
+COPY bin/hello /usr/bin/hello
