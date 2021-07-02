@@ -53,7 +53,6 @@ type EosProjectsmpl struct {
 
 // Greet implements the EosProjectsHandler interface.
 func (p EosProjectsmpl) GetProjects(user *userpb.User) []*proto.Project {
-	groups := []string{"cernbox-project-swan-admins", "cernbox-project-swan-writers", "cernbox-project-cernbox-writers", "cernbox-project-cernbox-readers"}
 
 	p.log.Info().
 		Str("username", user.Username).
@@ -64,7 +63,7 @@ func (p EosProjectsmpl) GetProjects(user *userpb.User) []*proto.Project {
 	userProjects := make(map[string]string)
 	var userProjectsKeys []string
 
-	for _, group := range groups {
+	for _, group := range user.Groups {
 		match := r.FindStringSubmatch(group)
 		if match != nil {
 			if userProjects[match[1]] == "" {
