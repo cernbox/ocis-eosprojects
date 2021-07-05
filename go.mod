@@ -28,10 +28,12 @@ require (
 )
 
 replace (
+	// use our local fork FIXME
+	github.com/cs3org/reva => ../reva
 	github.com/gomodule/redigo => github.com/gomodule/redigo v1.8.2
 	github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
-	// use our fork instead
-	github.com/owncloud/ocis/ocis-pkg => github.com/cernbox/ocis/ocis-pkg v0.0.0-20210705094209-691e36cc1114
+	// use our local fork FIXME
+	github.com/owncloud/ocis/ocis-pkg => ../ocis/ocis-pkg
 	// taken from https://github.com/asim/go-micro/blob/master/plugins/registry/etcd/go.mod#L14-L16
 	go.etcd.io/etcd/api/v3 => go.etcd.io/etcd/api/v3 v3.0.0-20210204162551-dae29bb719dd
 	go.etcd.io/etcd/pkg/v3 => go.etcd.io/etcd/pkg/v3 v3.0.0-20210204162551-dae29bb719dd
