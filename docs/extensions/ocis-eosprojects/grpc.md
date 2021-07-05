@@ -9,7 +9,7 @@ geekdocFilePath: grpc.md
 
 {{< toc >}}
 
-## eosprojects.proto
+## ocis-eosprojects.proto
 
 ### Project
 
