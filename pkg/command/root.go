@@ -6,11 +6,13 @@ import (
 	"strings"
 
 	"github.com/owncloud/ocis/ocis-pkg/sync"
+	"github.com/thejerf/suture/v4"
 
 	"github.com/cernbox/ocis-eosprojects/pkg/config"
 	"github.com/cernbox/ocis-eosprojects/pkg/flagset"
 	"github.com/cernbox/ocis-eosprojects/pkg/version"
 	"github.com/micro/cli/v2"
+	ociscfg "github.com/owncloud/ocis/ocis-pkg/config"
 	"github.com/owncloud/ocis/ocis-pkg/log"
 	"github.com/spf13/viper"
 )
@@ -111,9 +113,19 @@ func ParseConfig(c *cli.Context, cfg *config.Config) error {
 	return nil
 }
 
-// SutureService allows for the hello command to be embedded and supervised by a suture supervisor tree.
+// SutureService allows for the ocis-eosprojects command to be embedded and supervised by a suture supervisor tree.
 type SutureService struct {
 	cfg *config.Config
+}
+
+func NewSutureService(cfg *ociscfg.Config) suture.Service {
+	if cfg.Mode == 0 {
+		cfg.CernboxEosProjects.Supervised = true
+	}
+	cfg.CernboxEosProjects.Log.File = cfg.Log.File
+	return SutureService{
+		cfg: cfg.CernboxEosProjects,
+	}
 }
 
 func (s SutureService) Serve(ctx context.Context) error {

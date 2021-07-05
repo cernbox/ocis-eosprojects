@@ -27,6 +27,7 @@ require (
 	github.com/prometheus/client_golang v1.10.0
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
+	github.com/thejerf/suture/v4 v4.0.0 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.0-pre // indirect
 	go.etcd.io/etcd/pkg/v3 v3.5.0-pre // indirect
 	go.opencensus.io v0.23.0
