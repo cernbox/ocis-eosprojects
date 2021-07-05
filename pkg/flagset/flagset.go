@@ -89,7 +89,7 @@ func ServerWithConfig(cfg *config.Config) []cli.Flag {
 		},
 		&cli.StringFlag{
 			Name:        "tracing-service",
-			Value:       "eosprojects",
+			Value:       "ocis-eosprojects",
 			Usage:       "Service name for tracing",
 			EnvVars:     []string{"EOSP_TRACING_SERVICE"},
 			Destination: &cfg.Tracing.Service,

@@ -18,9 +18,9 @@ import (
 // Execute is the entry point for the ocis-eosprojects command.
 func Execute(cfg *config.Config) error {
 	app := &cli.App{
-		Name:     "eosprojects",
+		Name:     "ocis-eosprojects",
 		Version:  version.String,
-		Usage:    "eosprojects, Extension to list user Eos Projects",
+		Usage:    "ocis-eosprojects, Extension to list user Eos Projects",
 		Compiled: version.Compiled(),
 
 		Authors: []*cli.Author{

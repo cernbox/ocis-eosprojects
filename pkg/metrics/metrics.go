@@ -9,7 +9,7 @@ var (
 	Namespace = "ocis"
 
 	// Subsystem defines the subsystem for the defines metrics.
-	Subsystem = "eosprojects"
+	Subsystem = "ocis-eosprojects"
 )
 
 // Metrics defines the available metrics of this service.

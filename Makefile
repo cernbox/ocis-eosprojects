@@ -1,5 +1,5 @@
 SHELL := bash
-NAME := eosprojects
+NAME := ocis-eosprojects
 
 
 
