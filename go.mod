@@ -17,7 +17,7 @@ require (
 	github.com/micro/cli/v2 v2.1.2
 	github.com/oklog/run v1.1.0
 	github.com/openzipkin/zipkin-go v0.2.5
-	github.com/owncloud/ocis/ocis-pkg v0.0.0-20210702080202-296b41d4d226
+	github.com/owncloud/ocis/ocis-pkg v0.0.0-20210412113235-982264811ecb
 	github.com/prometheus/client_golang v1.10.0
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
@@ -28,12 +28,8 @@ require (
 )
 
 replace (
-	// use our local fork FIXME
-	github.com/cs3org/reva => ../reva
 	github.com/gomodule/redigo => github.com/gomodule/redigo v1.8.2
 	github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
-	// use our local fork FIXME
-	github.com/owncloud/ocis/ocis-pkg => ../ocis/ocis-pkg
 	// taken from https://github.com/asim/go-micro/blob/master/plugins/registry/etcd/go.mod#L14-L16
 	go.etcd.io/etcd/api/v3 => go.etcd.io/etcd/api/v3 v3.0.0-20210204162551-dae29bb719dd
 	go.etcd.io/etcd/pkg/v3 => go.etcd.io/etcd/pkg/v3 v3.0.0-20210204162551-dae29bb719dd
