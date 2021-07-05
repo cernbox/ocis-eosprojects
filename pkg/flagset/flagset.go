@@ -157,7 +157,7 @@ func ServerWithConfig(cfg *config.Config) []cli.Flag {
 		},
 		&cli.StringFlag{
 			Name:        "name",
-			Value:       flags.OverrideDefaultString(cfg.Server.Name, "hello"),
+			Value:       flags.OverrideDefaultString(cfg.Server.Name, "ocis-eosprojects"),
 			Usage:       "service name",
 			EnvVars:     []string{"EOSP_NAME"},
 			Destination: &cfg.Server.Name,
