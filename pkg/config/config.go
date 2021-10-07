@@ -67,18 +67,24 @@ type DB struct {
 	Table    string
 }
 
+type UserGroupsManager struct {
+	SkipUserGroupsInToken bool
+	RevaGateway           string
+}
+
 // Config combines all available configuration parts.
 type Config struct {
-	File         string
-	Log          Log
-	Debug        Debug
-	HTTP         HTTP
-	GRPC         GRPC
-	Server       Server
-	Tracing      Tracing
-	Asset        Asset
-	TokenManager TokenManager
-	DB           DB
+	File              string
+	Log               Log
+	Debug             Debug
+	HTTP              HTTP
+	GRPC              GRPC
+	Server            Server
+	Tracing           Tracing
+	Asset             Asset
+	TokenManager      TokenManager
+	DB                DB
+	UserGroupsManager UserGroupsManager
 
 	Context    context.Context
 	Supervised bool

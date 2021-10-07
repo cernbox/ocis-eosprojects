@@ -51,7 +51,7 @@ func Server(cfg *config.Config) *cli.Command {
 
 			mtrcs.BuildInfo.WithLabelValues(cfg.Server.Version).Set(1)
 
-			handler, err := svc.NewEosProjects(cfg.DB, svc.Logger(logger))
+			handler, err := svc.NewEosProjects(cfg.DB, cfg.UserGroupsManager, svc.Logger(logger))
 			if err != nil {
 				logger.Error().Err(err).Msg("handler init")
 				return err
