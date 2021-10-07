@@ -225,5 +225,19 @@ func ServerWithConfig(cfg *config.Config) []cli.Flag {
 			EnvVars:     []string{"EOSP_DB_TABLE"},
 			Destination: &cfg.DB.Table,
 		},
+		&cli.BoolFlag{
+			Name:        "skip-user-groups-in-token",
+			Value:       true,
+			Usage:       "Whether user groups have been skipped in reva tokens",
+			EnvVars:     []string{"EOSP_SKIP_USER_GROUPS_IN_TOKEN"},
+			Destination: &cfg.UserGroupsManager.SkipUserGroupsInToken,
+		},
+		&cli.StringFlag{
+			Name:        "reva-gateway",
+			Value:       "localhost:9142",
+			Usage:       "The reva gateway address",
+			EnvVars:     []string{"EOSP_REVA_GATEWAY"},
+			Destination: &cfg.UserGroupsManager.RevaGateway,
+		},
 	}
 }

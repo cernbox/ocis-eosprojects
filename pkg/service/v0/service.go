@@ -1,15 +1,18 @@
 package service
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"regexp"
+	"time"
 
-	"github.com/juliangruber/go-intersect"
-
+	"github.com/bluele/gcache"
 	"github.com/cernbox/ocis-eosprojects/pkg/config"
 	"github.com/cernbox/ocis-eosprojects/pkg/proto/v0"
 	userpb "github.com/cs3org/go-cs3apis/cs3/identity/user/v1beta1"
+	"github.com/cs3org/reva/pkg/rgrpc/todo/pool"
+	"github.com/juliangruber/go-intersect"
 	"github.com/owncloud/ocis/ocis-pkg/log"
 
 	//mysql package requires blank import
@@ -27,7 +30,7 @@ type EosProjects interface {
 }
 
 // New returns a new instance of Service
-func NewEosProjects(dbCfg config.DB, opts ...Option) (EosProjects, error) {
+func NewEosProjects(dbCfg config.DB, userGroupsManager config.UserGroupsManager, opts ...Option) (EosProjects, error) {
 	options := newOptions(opts...)
 
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", dbCfg.Username, dbCfg.Password, dbCfg.Host, dbCfg.Port, dbCfg.Name))
@@ -36,9 +39,11 @@ func NewEosProjects(dbCfg config.DB, opts ...Option) (EosProjects, error) {
 	}
 
 	p := EosProjectsmpl{
-		log:     options.Logger,
-		db:      db,
-		dbTable: dbCfg.Table,
+		log:               options.Logger,
+		db:                db,
+		dbTable:           dbCfg.Table,
+		userGroupsManager: userGroupsManager,
+		userGroupsCache:   gcache.New(1000000).LFU().Build(),
 	}
 
 	return p, nil
@@ -46,9 +51,11 @@ func NewEosProjects(dbCfg config.DB, opts ...Option) (EosProjects, error) {
 
 // BasicGreeter implements the Greeter interface
 type EosProjectsmpl struct {
-	log     log.Logger
-	db      *sql.DB
-	dbTable string
+	log               log.Logger
+	db                *sql.DB
+	dbTable           string
+	userGroupsManager config.UserGroupsManager
+	userGroupsCache   gcache.Cache
 }
 
 // Greet implements the EosProjectsHandler interface.
@@ -58,12 +65,24 @@ func (p EosProjectsmpl) GetProjects(user *userpb.User) []*proto.Project {
 		Str("username", user.Username).
 		Msg("Getting projects")
 
+	groups := user.Groups
+	if p.userGroupsManager.SkipUserGroupsInToken {
+		var err error
+		groups, err = p.getUserGroups(user)
+		if err != nil {
+			p.log.Error().
+				Err(err).
+				Msg("Failed to get user groups")
+			return nil
+		}
+	}
+
 	r := regexp.MustCompile(`^cernbox-project-(?P<Name>.+)-(?P<Permissions>admins|writers|readers)\z`)
 
 	userProjects := make(map[string]string)
 	var userProjectsKeys []string
 
-	for _, group := range user.Groups {
+	for _, group := range groups {
 		match := r.FindStringSubmatch(group)
 		if match != nil {
 			if userProjects[match[1]] == "" {
@@ -121,6 +140,27 @@ func (p EosProjectsmpl) GetProjects(user *userpb.User) []*proto.Project {
 	}
 
 	return projects
+}
+
+func (p EosProjectsmpl) getUserGroups(u *userpb.User) ([]string, error) {
+	if groupsIf, err := p.userGroupsCache.Get(u.Id.OpaqueId); err == nil {
+		p.log.Info().
+			Msgf("user groups found in cache %s", u.Id.OpaqueId)
+		return groupsIf.([]string), nil
+	}
+
+	client, err := pool.GetGatewayServiceClient(p.userGroupsManager.RevaGateway)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := client.GetUserGroups(context.Background(), &userpb.GetUserGroupsRequest{UserId: u.Id})
+	if err != nil {
+		return nil, err
+	}
+	_ = p.userGroupsCache.SetWithExpire(u.Id.OpaqueId, res.Groups, 3600*time.Second)
+
+	return res.Groups, nil
 }
 
 func getHigherPermission(perm1, perm2 string) string {
